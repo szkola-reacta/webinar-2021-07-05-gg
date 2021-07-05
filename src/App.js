@@ -6,7 +6,6 @@ import 'firebase/firestore';
 import 'firebase/auth';
 import 'firebase/database';
 
-
 import Main from './components/Main';
 import { Provider as FirebaseProvider } from './containers/FirebaseContext';
 import { Provider as UIProvider } from './containers/UIContext';
