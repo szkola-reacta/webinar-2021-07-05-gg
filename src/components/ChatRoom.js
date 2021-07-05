@@ -1,7 +1,7 @@
 import { useState, useRef, useContext, useEffect } from 'react';
 import { useCollectionData } from 'react-firebase-hooks/firestore';
 import useSound from 'use-sound';
-import { Button, Input} from '@chakra-ui/react';
+import { Button, Input, Flex} from '@chakra-ui/react';
 
 import FirebaseContext from '../containers/FirebaseContext';
 import UIContext from '../containers/UIContext';
@@ -67,8 +67,10 @@ function ChatRoom() {
         <div ref={bottom}></div>
       </div>
       <form onSubmit={sendMessage}>
+        <Flex mb={3}>
           <Input value={formValue} onChange={(e) => setFormValue(e.target.value)} />
           <Button type="submit">Send</Button>
+        </Flex>
       </form>
     </div>
   );
