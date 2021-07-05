@@ -1,4 +1,4 @@
-import { useEffect, useContext, useState } from 'react';
+import { useEffect, useContext } from 'react';
 import { useCollectionData } from 'react-firebase-hooks/firestore';
 import useSound from 'use-sound';
 import { Box, List } from '@chakra-ui/react';
@@ -13,7 +13,6 @@ function Users() {
   const usersRef = firestore.collection('users');
   const query = usersRef.orderBy('displayName');
   const [users] = useCollectionData(query, { idField: 'id' });
-  // const [users, setUsers] = useState([]); // TODO: get from database
 
   const [playSound] = useSound(
     '/sounds/dostepny.mp3',
@@ -24,14 +23,17 @@ function Users() {
     firebase.firestore().collection('users')
     .where('state', '==', 'online')
     .onSnapshot((snapshot) => {
-      snapshot.docChanges().forEach((change) => {
-        if (change.type === 'added') {
-          if (!muted) {
-            playSound();
-          }
-        }
-      })
-    })
+        snapshot.docChanges().forEach((change) => {
+            if (change.type === 'added') {
+                if (!muted) {
+                  playSound();
+                }
+            }
+            if (change.type === 'removed') {
+
+            }
+        });
+    });
   }
 
   useEffect(() => {

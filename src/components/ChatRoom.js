@@ -1,7 +1,7 @@
 import { useState, useRef, useContext, useEffect } from 'react';
 import { useCollectionData } from 'react-firebase-hooks/firestore';
 import useSound from 'use-sound';
-import { Button, Input, Flex} from '@chakra-ui/react';
+import { Button, Input, Flex } from '@chakra-ui/react';
 
 import FirebaseContext from '../containers/FirebaseContext';
 import UIContext from '../containers/UIContext';
@@ -10,41 +10,44 @@ import ChatMessage from './ChatMessage';
 function ChatRoom() {
   const { firebase, auth, firestore } = useContext(FirebaseContext);
   const { muted } = useContext(UIContext);
-  const [formValue, setFormValue] = useState('');
   const bottom = useRef();
-  // const [messages, setMessages] = useState([]); // TODO: implement
   const messagesRef = firestore.collection('messages');
-  const query = messagesRef.orderBy('createdAt'); // .limit(25)
-  const [messages] = useCollectionData(query, { idField: 'id'});
+  // const query = messagesRef.orderBy('createdAt').limit(25);
+  const query = messagesRef.orderBy('createdAt');
+  const [messages] = useCollectionData(query, { idField: 'id' });
+  const [formValue, setFormValue] = useState('');
 
   const [playSound] = useSound(
     '/sounds/wiadomosc.mp3',
     { volume: 0.25 }
   );
 
-  const watchUsers = async () => {
+  const watchMessages = async () => {
     firebase.firestore().collection('messages')
     .onSnapshot((snapshot) => {
-      snapshot.docChanges().forEach((change) => {
-        if (change.type === 'added') {
-          const { uid: docUid } = change.doc.data();
-          const { uid } = auth.currentUser;
-          if (!muted && docUid !== uid) {
-            playSound();
-          }
-        }
-      })
-    })
+        snapshot.docChanges().forEach((change) => {
+            if (change.type === 'added') {
+              const { uid: docUid } = change.doc.data();
+              const { uid: ownerUid } = auth.currentUser;
+
+              if (!muted && docUid !== ownerUid) {
+                playSound();
+              }
+            }
+            if (change.type === 'removed') {
+
+            }
+        });
+    });
   }
 
   useEffect(() => {
-    watchUsers();
+    watchMessages();
   }, []);
 
-  const sendMessage = async(event) => {
-    event.preventDefault();
+  const sendMessage = async(e) => {
+    e.preventDefault();
 
-     // TODO: implement
     const { uid, photoURL } = auth.currentUser;
 
     await messagesRef.add({
