@@ -26,6 +26,9 @@ function Main() {
   const handleSubmit = (event) => {
     event.preventDefault();
     // TODO: implement
+    const { uid } = auth.currentUser;
+    const usersDatabaseRef = firebase.database().ref(`/users/${uid}`);
+    usersDatabaseRef.update({ textStatus, customName });
   }
 
   useEffect(() => {
