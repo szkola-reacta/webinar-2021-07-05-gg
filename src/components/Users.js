@@ -9,7 +9,34 @@ import User from './User';
 
 function Users() {
   const { firebase, firestore } = useContext(FirebaseContext);
-  const [users, setUsers] = useState([]); // TODO: get from database
+  const { muted } = useContext(UIContext);
+  const usersRef = firestore.collection('users');
+  const query = usersRef.orderBy('displayName');
+  const [users] = useCollectionData(query, { idField: 'id' });
+  // const [users, setUsers] = useState([]); // TODO: get from database
+
+  const [playSound] = useSound(
+    '/sounds/dostepny.mp3',
+    { volume: 0.25 }
+  );
+
+  const watchUsers = async () => {
+    firebase.firestore().collection('users')
+    .where('state', '==', 'online')
+    .onSnapshot((snapshot) => {
+      snapshot.docChanges().forEach((change) => {
+        if (change.type === 'added') {
+          if (!muted) {
+            playSound();
+          }
+        }
+      })
+    })
+  }
+
+  useEffect(() => {
+    watchUsers();
+  }, []);
 
   return (
     <Box w={300} mr={3}>
