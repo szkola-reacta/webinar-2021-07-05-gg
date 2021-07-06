@@ -1,3 +1,38 @@
+# Setup Firebase credentials
+
+On local machine create new file `.env.local` and fill variables with Firebase values:
+
+```
+REACT_APP_API_KEY=""
+REACT_APP_AUTH_DOMAIN=""
+REACT_APP_DATABASE_URL=""
+REACT_APP_PROJECT_ID=""
+REACT_APP_STORAGE_BUCKET=""
+REACT_APP_MESSAGING_SENDER_ID=""
+REACT_APP_APP_ID=""
+```
+
+Next step is to install dependencies (if you don't have `yarn` just use `npm`):
+
+1. Frotnend app:
+
+```bash
+yarn
+```
+
+2. Firebase Functions:
+
+```bash
+cd functions
+npm install
+```
+
+3. Back to main folder and run:
+
+```bash
+yarn deploy
+```
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
