@@ -1,7 +1,7 @@
 import { useState, useRef, useContext, useEffect } from 'react';
 import { useCollectionData } from 'react-firebase-hooks/firestore';
 import useSound from 'use-sound';
-import { Button, Input, Flex } from '@chakra-ui/react';
+import { Box, Button, Input, Flex } from '@chakra-ui/react';
 
 import FirebaseContext from '../containers/FirebaseContext';
 import UIContext from '../containers/UIContext';
@@ -48,13 +48,14 @@ function ChatRoom() {
   const sendMessage = async(e) => {
     e.preventDefault();
 
-    const { uid, photoURL } = auth.currentUser;
+    const { uid, photoURL, displayName } = auth.currentUser;
 
     await messagesRef.add({
       text: formValue,
       createdAt: firebase.firestore.FieldValue.serverTimestamp(),
       uid,
       photoURL,
+      displayName,
     });
 
     setFormValue('');
@@ -64,18 +65,20 @@ function ChatRoom() {
   }
 
   return (
-    <div>
-      <div>
+    <Box>
+      <Box mb={3}>
         {messages && messages.map(msg => <ChatMessage key={msg.id} message={msg} />)}
         <div ref={bottom}></div>
-      </div>
-      <form onSubmit={sendMessage}>
-        <Flex mb={3}>
-          <Input value={formValue} onChange={(e) => setFormValue(e.target.value)} />
-          <Button type="submit">Send</Button>
-        </Flex>
-      </form>
-    </div>
+      </Box>
+      <Box>
+        <form onSubmit={sendMessage}>
+          <Flex mb={3}>
+            <Input value={formValue} onChange={(e) => setFormValue(e.target.value)} />
+            <Button type="submit">Send</Button>
+          </Flex>
+        </form>
+      </Box>
+    </Box>
   );
 }
 

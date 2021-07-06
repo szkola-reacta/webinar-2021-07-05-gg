@@ -1,13 +1,13 @@
 import { useContext } from 'react';
 import { format } from 'date-fns';
-import { Avatar, Flex, Box, Divider, HStack } from "@chakra-ui/react"
+import { Avatar, Flex, Box, Text, Divider, HStack } from "@chakra-ui/react"
 
 import FirebaseContext from '../containers/FirebaseContext';
 import allowedEmoticons from '../allowedEmoticons.json';
 
 function ChatMessage(props) {
   const { auth } = useContext(FirebaseContext);
-  const { text, uid, photoURL, createdAt } = props.message;
+  const { text, uid, photoURL, createdAt, displayName } = props.message;
 
   const messageClass = uid === auth.currentUser.uid ? 'sent' : 'received';
 
@@ -25,14 +25,18 @@ function ChatMessage(props) {
   }
 
   return (
-    <Box className={`message ${messageClass}`} mb={2}>
-      <Box color="gray.400" mb={2}>{createdAt && format(createdAt.toDate(), 'dd/MM/yyy HH:mm:ss')}</Box>
-      <Flex mb={2}>
-        <Avatar src={photoURL} alt="" />
-        <HStack ml={2}>{parseMessage(text)}</HStack>
-      </Flex>
+    <>
+      <Box bgColor={messageClass === 'received' ? 'white' : 'gray.100' } p={2}>
+        <Box color="gray.400" mb={2}>
+          <Text>{createdAt && format(createdAt.toDate(), 'dd.MM.yyyy HH:mm:ss')} {displayName}</Text>
+        </Box>
+        <Flex mb={2}>
+          <Avatar src={photoURL} alt="" />
+          <HStack ml={2}>{parseMessage(text)}</HStack>
+        </Flex>
+      </Box>
       <Divider />
-    </Box>
+    </>
   );
 }
 

@@ -1,6 +1,6 @@
 import { useEffect, useState, useContext } from 'react';
 import { useAuthState } from 'react-firebase-hooks/auth';
-import { Button, Input, Flex, Box } from '@chakra-ui/react';
+import { Button, Input, Flex, Box, Text } from '@chakra-ui/react';
 
 import FirebaseContext from '../containers/FirebaseContext';
 import Users from './Users';
@@ -95,23 +95,43 @@ function Main() {
     }
   }, [auth.currentUser]);
 
+  const renderApp = () => {
+    if (!user) {
+      return (
+        <Box w="100%">
+          <Box textAlign="right" mr={4}><SignIn /></Box>
+          <Box p={4}>
+            <Text>You need to signin first</Text>
+          </Box>
+        </Box>
+      );
+    }
+    return (
+      <>
+        <Users />
+        <Box w="100%">
+          <Box textAlign="right" mr={4}><MuteButton /><SingOut /></Box>
+          <Box mb={4}>
+            <form onSubmit={handleSubmit}>
+            <Box>
+              <Text>Change your status and display name</Text>
+            </Box>
+            <Flex>
+              <Input placeholder="status..." onChange={handleStatusChange} />
+              <Input placeholder="name..." onChange={handleCustomNameChange} />
+              <Button type="sumit">Send</Button>
+            </Flex>
+            </form>
+          </Box>
+          <ChatRoom />
+        </Box>
+      </>
+    );
+  }
+
   return (
     <Flex>
-      <Users />
-      <Box w="100%">
-        <Box>
-          {user && <Box textAlign="right" mr={4}><MuteButton /><SingOut /></Box>}
-          {user ? <ChatRoom /> : <Box textAlign="right" mr={4}><SignIn /></Box> }
-        </Box>
-
-        {user && <form onSubmit={handleSubmit}>
-          <Flex>
-            <Input placeholder="status..." onChange={handleStatusChange} />
-            <Input placeholder="name..." onChange={handleCustomNameChange} />
-            <Button type="sumit">Send</Button>
-          </Flex>
-        </form>}
-      </Box>
+      {renderApp()}
     </Flex>
   );
 }
